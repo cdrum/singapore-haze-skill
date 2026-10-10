@@ -4,8 +4,10 @@
 Python 3 standard library only. data.gov.sg publishes the readings without an
 API key, and rejects requests that omit a User-Agent header (HTTP 403).
 
-Keep scripts/haze.py and skills/singapore-haze/scripts/haze.py identical.
-tests/test_haze.py checks both bytes.
+Keep these copies identical. tests/test_haze.py checks the bytes:
+  scripts/haze.py
+  skills/singapore-haze/scripts/haze.py
+  plugins/singapore-haze/skills/singapore-haze/scripts/haze.py
 """
 
 from __future__ import annotations

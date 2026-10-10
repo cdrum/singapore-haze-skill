@@ -4,7 +4,7 @@ A small, tool-agnostic [agent skill](https://agentskills.io) that reports Singap
 
 The agent follows `SKILL.md` and runs `scripts/haze.py`. The script is Python 3 standard library only. NEA publishes the data on data.gov.sg with no API key. Requests must send a User-Agent header; the script does that, because data.gov.sg returns HTTP 403 without one.
 
-`SKILL.md` at the repository root and `skills/singapore-haze/SKILL.md` are the same skill. The `name` in the frontmatter is `singapore-haze`, so install it into a folder of that name. Claude Code, Codex, and Cursor use that `name` and `description` to load the skill. Grok Bot can save the same file as a private skill.
+`SKILL.md` at the repository root is the copy [skills.sh](https://skills.sh) indexes, and it matches `skills/singapore-haze/SKILL.md`. The `name` in the frontmatter is `singapore-haze`. Claude Code and Codex can install it from this repository's marketplace. Cursor and Grok Bot can load the same file.
 
 ## Sample output
 
@@ -47,11 +47,37 @@ There is nothing to install and no dependency list.
 
 ## Install the skill
 
-Copy `SKILL.md` and `scripts/haze.py` so the script stays at `scripts/haze.py` next to `SKILL.md`. The skill tells the agent to run it from that directory.
+The installed skill is `SKILL.md` with `scripts/haze.py` beside it. The skill tells the agent to run `python3 scripts/haze.py` from that directory.
+
+### Install by asking your agent
+
+Paste this to Grok Bot, or to any agent that can open a GitHub URL and save a skill:
+
+```
+Install the agent skill from https://github.com/cdrum/singapore-haze-skill
+```
+
+The agent reads `SKILL.md` and `scripts/haze.py` from that repository and saves them together as a skill. In Grok Bot that saved skill is a private skill.
 
 ### Claude Code
 
-Personal skill, available in every project:
+In a Claude Code session, the marketplace name is `cdrum-skills`:
+
+```
+/plugin marketplace add cdrum/singapore-haze-skill
+/plugin install singapore-haze@cdrum-skills
+```
+
+The same two steps from the shell:
+
+```bash
+claude plugin marketplace add cdrum/singapore-haze-skill
+claude plugin install singapore-haze@cdrum-skills
+```
+
+The catalog is `.claude-plugin/marketplace.json`. The plugin is `skills/singapore-haze`, which already holds `SKILL.md` and `scripts/haze.py`. Installed copies stay on the `version` in `skills/singapore-haze/.claude-plugin/plugin.json` until that field changes. See [Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace).
+
+To copy it by hand instead, into your personal skills folder or a project's `.claude/skills/singapore-haze/`:
 
 ```bash
 mkdir -p ~/.claude/skills/singapore-haze/scripts
@@ -59,11 +85,18 @@ cp SKILL.md ~/.claude/skills/singapore-haze/SKILL.md
 cp scripts/haze.py ~/.claude/skills/singapore-haze/scripts/haze.py
 ```
 
-For one project, use `.claude/skills/singapore-haze/` the same way. Claude Code loads `~/.claude/skills/<name>/SKILL.md` and `.claude/skills/<name>/SKILL.md`. See [Extend Claude with skills](https://code.claude.com/docs/en/skills).
+Claude Code also loads `~/.claude/skills/<name>/SKILL.md` and `.claude/skills/<name>/SKILL.md`. See [Extend Claude with skills](https://code.claude.com/docs/en/skills).
 
 ### Codex
 
-User skill:
+```bash
+codex plugin marketplace add cdrum/singapore-haze-skill
+codex plugin add singapore-haze@cdrum-skills
+```
+
+The catalog is `.agents/plugins/marketplace.json`. The plugin is `plugins/singapore-haze`, and `.codex-plugin/plugin.json` sets `skills` to `./skills/singapore-haze`. Codex only loads skill paths inside that plugin directory, so the plugin carries the same `SKILL.md` and `scripts/haze.py`. See [Build plugins](https://developers.openai.com/codex/plugins/build).
+
+To copy it by hand instead:
 
 ```bash
 mkdir -p ~/.agents/skills/singapore-haze/scripts
@@ -71,7 +104,7 @@ cp SKILL.md ~/.agents/skills/singapore-haze/SKILL.md
 cp scripts/haze.py ~/.agents/skills/singapore-haze/scripts/haze.py
 ```
 
-A repository can ship the same folder at `.agents/skills/singapore-haze/`. Codex still reads the older `~/.codex/skills/` location. Restart Codex after adding a skill. See [Agent Skills](https://developers.openai.com/codex/skills).
+A repository can ship the same folder at `.agents/skills/singapore-haze/`. Codex still reads the older `~/.codex/skills/` location. Restart Codex after adding a skill by hand. See [Agent Skills](https://developers.openai.com/codex/skills).
 
 ### Cursor
 
