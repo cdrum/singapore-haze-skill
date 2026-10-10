@@ -1,0 +1,13 @@
+{
+  "name": "singapore-haze",
+  "description": "Report current Singapore haze from NEA: 24-hour PSI and 1-hour PM2.5 for North, South, East, West, and Central, with official descriptors.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Chris Drumgoole",
+    "url": "https://github.com/cdrum"
+  },
+  "homepage": "https://github.com/cdrum/singapore-haze-skill",
+  "repository": "https://github.com/cdrum/singapore-haze-skill",
+  "license": "MIT",
+  "keywords": ["singapore", "haze", "psi", "pm2.5", "air-quality"]
+}

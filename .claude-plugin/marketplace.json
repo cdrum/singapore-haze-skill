@@ -1,0 +1,19 @@
+{
+  "name": "cdrum-skills",
+  "description": "Skills published by Chris Drumgoole.",
+  "owner": {
+    "name": "Chris Drumgoole",
+    "url": "https://github.com/cdrum"
+  },
+  "plugins": [
+    {
+      "name": "singapore-haze",
+      "source": "./skills/singapore-haze",
+      "description": "Report current Singapore haze from NEA: 24-hour PSI and 1-hour PM2.5 for North, South, East, West, and Central.",
+      "homepage": "https://github.com/cdrum/singapore-haze-skill",
+      "repository": "https://github.com/cdrum/singapore-haze-skill",
+      "license": "MIT",
+      "keywords": ["singapore", "haze", "psi", "pm2.5", "air-quality"]
+    }
+  ]
+}

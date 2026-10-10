@@ -1,8 +1,9 @@
-"""Descriptor boundaries and region handling. No live API calls."""
+"""Descriptor boundaries, region handling, and marketplace manifests. No live API calls."""
 
 from __future__ import annotations
 
 import io
+import json
 import sys
 import unittest
 from contextlib import redirect_stderr
@@ -96,17 +97,48 @@ class RegionTests(unittest.TestCase):
 
 
 class BundleTests(unittest.TestCase):
-    def test_skill_copy_matches_root(self) -> None:
+    def test_skill_copies_match_root(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        skill = root / "skills" / "singapore-haze"
-        self.assertEqual(
-            (root / "SKILL.md").read_bytes(),
-            (skill / "SKILL.md").read_bytes(),
+        copies = (
+            root,
+            root / "skills" / "singapore-haze",
+            root / "plugins" / "singapore-haze" / "skills" / "singapore-haze",
         )
-        self.assertEqual(
-            (root / "scripts" / "haze.py").read_bytes(),
-            (skill / "scripts" / "haze.py").read_bytes(),
+        skill = (root / "SKILL.md").read_bytes()
+        script = (root / "scripts" / "haze.py").read_bytes()
+        for directory in copies:
+            self.assertEqual((directory / "SKILL.md").read_bytes(), skill)
+            self.assertEqual((directory / "scripts" / "haze.py").read_bytes(), script)
+
+    def test_marketplace_manifests(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        claude = json.loads((root / ".claude-plugin" / "marketplace.json").read_text())
+        claude_plugin = json.loads(
+            (root / "skills" / "singapore-haze" / ".claude-plugin" / "plugin.json").read_text()
         )
+        codex = json.loads((root / ".agents" / "plugins" / "marketplace.json").read_text())
+        codex_plugin = json.loads(
+            (root / "plugins" / "singapore-haze" / ".codex-plugin" / "plugin.json").read_text()
+        )
+
+        self.assertEqual(claude["name"], "cdrum-skills")
+        self.assertEqual(claude["plugins"][0]["name"], "singapore-haze")
+        self.assertEqual(claude["plugins"][0]["source"], "./skills/singapore-haze")
+        self.assertEqual(claude_plugin["name"], "singapore-haze")
+        self.assertNotIn("..", claude["plugins"][0]["source"])
+
+        self.assertEqual(codex["name"], "cdrum-skills")
+        entry = codex["plugins"][0]
+        self.assertEqual(entry["name"], "singapore-haze")
+        self.assertEqual(entry["source"]["path"], "./plugins/singapore-haze")
+        self.assertEqual(entry["policy"]["installation"], "AVAILABLE")
+        self.assertEqual(entry["policy"]["authentication"], "ON_INSTALL")
+        self.assertEqual(entry["category"], "Productivity")
+        self.assertEqual(codex_plugin["name"], "singapore-haze")
+        self.assertEqual(codex_plugin["skills"], "./skills/singapore-haze")
+        self.assertNotIn("..", codex_plugin["skills"])
+        skill = root / "plugins" / "singapore-haze" / "skills" / "singapore-haze" / "SKILL.md"
+        self.assertTrue(skill.is_file())
 
 
 class ReportTests(unittest.TestCase):
